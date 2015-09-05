@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/webflow
+http://www.springframework.org/schema/webflow/spring-webflow.xsd">
+ 
+	<!-- Display the login page -->
+	<view-state id="shop" view="/WEB-INF/jsp/shop.jsp" model="shoppingCart">
+		<transition on="addToCart" to="addToCartAction"/>
+	</view-state>
+ 
+	<action-state id="addToCartAction">
+		<evaluate expression="cartService.addToCart(item)"/>
+ 		<transition to="addToCartSuccessView"/>
+		<transition on-exception="com.studytrails.tutorials.springwebflow.IncorrectLoginCredentialsException"
+			to="displayLoginErrorView"/>
+	</action-state>
+ 
+	<view-state id="addToCartSuccessView" view="/WEB-INF/views/display_login_success.jsp"/>
+ 
+	<view-state id="displayLoginErrorView" view="/WEB-INF/views/display_login_error.jsp"/>
+
+</flow>
