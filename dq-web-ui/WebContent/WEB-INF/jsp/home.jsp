@@ -61,7 +61,6 @@
 					<li><a href="/dq-web-ui/user-admin">Admin</a></li>
 				</security:authorize>
                 <li><a data-toggle="modal" data-target="#about-modal" role="button">About</a></li>
-                <li><a href="/dq-web-ui/shop">Shop</a></li>
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Links<span class="caret"></span></a>
                   <ul class="dropdown-menu" role="menu">

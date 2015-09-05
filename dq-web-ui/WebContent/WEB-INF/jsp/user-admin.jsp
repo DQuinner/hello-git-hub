@@ -1,6 +1,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<html lang="en">
+<html lang="en" data-ng-app="dq-angular-web">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -27,6 +27,10 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-route.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-resource.js"></script>
+    <script type="text/javascript" src="js/dq-angular-web.js"></script>
   </head>
 
   <body>
@@ -87,12 +91,11 @@
       </div>
     </div>
 
-    <div class="container">
+    <div class="container" data-ng-controller="users">
      <div class="row">
 		<table class="table table-bordered">
 		<thead>
 		<tr>
-			<th>#</th>
 			<th>Username</th>
 			<th>Email</th>
 			<th>Password</th>
@@ -101,16 +104,13 @@
 		</tr>
 		</thead>
 		<tbody>
-		<c:forEach items="${allUsers}" var="user">
-		  <tr>
-			<td>1</td>
-			<td>${user.username}</td>
-			<td>${user.email}</td>
-			<td>${user.password}</td>
-			<td>${user.forename}</td>
-			<td>${user.surname}</td>
+		  <tr data-ng-repeat="user in users">
+			<td>{{user.username}}</td>
+			<td>{{user.email}}</td>
+			<td>{{user.password}}</td>
+			<td>{{user.forename}}</td>
+			<td>{{user.surname}}</td>
 		  </tr>	
-		</c:forEach>
 		</tbody>
 	    </table>
 		</div>
@@ -122,40 +122,40 @@
       <footer class="centre-text-dq">
         <p>&copy; DQ.IE 2015</p>
       </footer>
-    </div> <!-- /container -->
 
 	<!-- Add User Modal -->
-	<div class="modal fade" id="add-user-modal" role="dialog">
+	<div class="modal fade" id="add-user-modal" data-role="dialog">
 		<div class="modal-dialog">
 			<!-- Modal content-->
 			<div class="modal-content">
+			<form data-ng-submit="submit()" data-ng-controller="create_user">
 				<div class="modal-header dq-dark-grey">
 				  <button type="button" class="close" data-dismiss="modal">&times;</button>
 				  <h4 class="modal-title">Enter User Information</h4>
 				</div>
-				<div class="modal-body dq-light-blue">
+				<div class="modal-body dq-light-blue" >
 					<div class="form-group">
 					  <label for="email">Email:</label>
-					  <input type="email" class="form-control" id="email">
+					  <input type="email" class="form-control" id="email" data-ng-model="email">
 					</div>
 					<div class="form-group">
 					  <label for="password">Password:</label>
-					  <input type="password" class="form-control" id="password">
+					  <input type="password" class="form-control" id="password" data-ng-model="password">
 					</div>
 					<div class="form-group">
 					  <label for="username">Username:</label>
-					  <input type="text" class="form-control" id="username">
+					  <input type="text" class="form-control" id="username" data-ng-model="username">
 					</div>
 					<div class="form-group">
 					  <label for="firstname">Firstname:</label>
-					  <input type="text" class="form-control" id="forename">
+					  <input type="text" class="form-control" id="forename" data-ng-model="forename">
 					</div>
 					<div class="form-group">
 					  <label for="surname">Surname:</label>
-					  <input type="text" class="form-control" id="surname">
+					  <input type="text" class="form-control" id="surname" data-ng-model="surname">
 					</div>
 					<div class="modal-footer dq-light-grey centre-text-dq">
-				  		<button id="btnAddUserModal" type="button" class="btn btn-dq" >Register</button>
+						<input type="submit" id="submit" value="Register" class="btn btn-dq"/>
 				  		<button id="btnCloseAddUserModal" type="button" class="btn btn-dq" data-dismiss="modal">Close</button>
 				  		<!-- <input type="button" class="btn btn-dq" id="btnAddUserModal" value="Register" onclick="doAjaxPost()"/> -->
 				  		<!-- <input type="button" class="btn btn-dq" data-dismiss="modal" value="Close"/> -->
@@ -163,7 +163,8 @@
 				  		<p>&copy; DQ.IE 2015</p>
 					</div>
 				</div>
-			 </div>
+			 </form>
+			 </div>	 
 		</div>
 	</div>
 	
@@ -240,52 +241,5 @@
     <script src="js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="js/ie10-viewport-bug-workaround.js"></script>
-    
-    <script type="text/javascript">
-    	$(document).ready(function() {
-            $("#btnAddUserModal").click(function(event){
-			   alert("Calling doAjaxAddUser()");
-			   doAjaxAddUser();
-			   alert("doAjaxAddUser() done");
-			   $(".add-user-modal").hide(1000);
-            });
-         });
-     </script>
-     
-     <script type="text/javascript">
-		function doAjaxAddUser() {
-			// get the form values
-			var username = $('#username').val();
-			var password = $('#password').val();
-			var email = $('#email').val();
-			var forename = $('#forename').val();
-			var surname = $('#surname').val();
-	
-			$.ajax({
-		        type: "POST",
-		        url: "/dq-web-ui/add-user",
-		        data: "username=" + username + "&password=" + password + "&email=" + email + "&forename=" + forename + "&surname=" + surname,
-		        success: function(response){
-		        	
-		        	if(response=="USER_ADDED"){
-		        		alert(username + "USER_ADDED");
-		        	}else{
-		        		alert("ERROR:" +response);
-		        	}
-					// we have the response
-					//$('#info').html(response);
-					//alert(response);
-					//$(".add-user-modal").hide(1000);
-					//$('#username').val('');
-			        //$('#password').val('');
-			        //$('#email').val('');
-			        //$('#forename').val('');
-			        //$('#surname').val('');
-				},
-				error: function(e){
-					alert('Error: ' + e);
-				}});
-			}
-	    </script>
   </body>
 </html>
